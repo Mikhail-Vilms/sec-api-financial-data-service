@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,8 +12,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SecApiFinancialDataService.Persistence;
+using SecApiFinancialDataService.Services;
 
 namespace SecApiFinancialDataService
 {
@@ -27,6 +33,18 @@ namespace SecApiFinancialDataService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.TryAddSingleton<IDynamoDBContext>(provider =>
+            {
+                var client = new AmazonDynamoDBClient(RegionEndpoint.USWest2);
+                return new DynamoDBContext(client, new DynamoDBContextConfig()
+                {
+                    ConsistentRead = false
+                });
+            });
+
+            services.AddSingleton<IDynamoAccess, DynamoAccess>();
+            services.AddSingleton<IFinancialPositionService, FinancialPositionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

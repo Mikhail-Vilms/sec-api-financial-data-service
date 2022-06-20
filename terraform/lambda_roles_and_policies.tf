@@ -20,8 +20,14 @@ resource "aws_iam_role_policy_attachment" "lambda-full-access-policy-attach" {
     policy_arn = "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "lambda-full-access-policy-cloudwatch-attach" {
+    role = aws_iam_role.lambda-function-exec-role.name
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 data "aws_iam_policy_document" "lambda-dynamo-access-policy-doc" {
     statement {
+        effect  = "Allow"
         actions = [
             "dynamodb:GetItem",
             "dynamodb:DescribeTable",
@@ -39,6 +45,11 @@ data "aws_iam_policy_document" "lambda-dynamo-access-policy-doc" {
 
 resource "aws_iam_policy" "lambda-dynamo-access-policy" {
     name   = "${local.lambdaName}-Dynamo-Access-Policy"
-    path   = "/"
+    path   = "/acct-managed/"
     policy = data.aws_iam_policy_document.lambda-dynamo-access-policy-doc.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda-dynamo-access-policy-attach" {
+    role = aws_iam_role.lambda-function-exec-role.name
+    policy_arn = aws_iam_policy.lambda-dynamo-access-policy.arn
 }
