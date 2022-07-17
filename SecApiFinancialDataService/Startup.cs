@@ -34,17 +34,28 @@ namespace SecApiFinancialDataService
         {
             services.AddControllers();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.
+                        AllowAnyOrigin().
+                        AllowAnyHeader().
+                        AllowAnyMethod();
+                });
+            });
+
             services.TryAddSingleton<IDynamoDBContext>(provider =>
             {
                 var client = new AmazonDynamoDBClient(RegionEndpoint.USWest2);
                 return new DynamoDBContext(client, new DynamoDBContextConfig()
                 {
-                    ConsistentRead = false
+                    ConsistentRead = true
                 });
             });
 
             services.AddSingleton<IDynamoAccess, DynamoAccess>();
-            services.AddSingleton<IFinancialPositionService, FinancialPositionService>();
+            services.AddSingleton<IFinancialDataService, FinancialDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -60,6 +71,8 @@ namespace SecApiFinancialDataService
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SecApiFinancialDataService.Persistence
+namespace SecApiFinancialDataService.Services
 {
-    public interface IDynamoAccess
+    public interface IFinancialDataService
     {
         public Task<FinancialPositionDynamoItem> GetFinancialPosition(
             string cikNumber,

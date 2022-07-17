@@ -1,6 +1,8 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using SecApiFinancialDataService.Model;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SecApiFinancialDataService.Persistence
@@ -16,16 +18,57 @@ namespace SecApiFinancialDataService.Persistence
 
         public async Task<FinancialPositionDynamoItem> GetFinancialPosition(
             string cikNumber,
-            string statementType,
+            FinancialStatementType statementType,
             string positionTitle)
         {
-            if (cikNumber == null || statementType == null || positionTitle == null)
+            if (cikNumber == null || positionTitle == null)
             {
                 throw new ArgumentNullException("Next values are required for fetching financial position from Dynamo: [cikNumber, statementType, position]");
             }
 
             FinancialPositionDynamoItem dynamoItem = await _dynamoDbContext
-                .LoadAsync<FinancialPositionDynamoItem>(cikNumber, $"{statementType}_{positionTitle}", default);
+                .LoadAsync<FinancialPositionDynamoItem>(
+                    cikNumber,
+                    $"{statementType}_{positionTitle}",
+                    default);
+
+            return dynamoItem;
+        }
+
+        public async Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatement(
+            string cikNumber,
+            FinancialStatementType statementType)
+        {
+            if (cikNumber == null)
+            {
+                throw new ArgumentNullException("Next values are required for fetching financial position from Dynamo: [cikNumber]");
+            }
+
+            IList<FinancialPositionDynamoItem> dynamoItems = await _dynamoDbContext
+                .QueryAsync<FinancialPositionDynamoItem>(
+                    cikNumber,
+                    QueryOperator.BeginsWith,
+                    new List<string>() { statementType.ToString() + "_" })
+                .GetRemainingAsync();
+
+            return dynamoItems;
+        }
+
+        public async Task<StatementStructureDynamoItem> GetStatementStructure(
+            string cikNumber,
+            FinancialStatementType statementType)
+        {
+            if (cikNumber == null)
+            {
+                throw new ArgumentNullException("Next values are required for fetching financial position from Dynamo: [cikNumber, statementType]");
+            }
+
+            var sortKeyVal = $"StatementStructure_{statementType}";
+            StatementStructureDynamoItem dynamoItem = await _dynamoDbContext
+                .LoadAsync<StatementStructureDynamoItem>(
+                    cikNumber,
+                    $"StatementStructure_{statementType}",
+                    default);
 
             return dynamoItem;
         }

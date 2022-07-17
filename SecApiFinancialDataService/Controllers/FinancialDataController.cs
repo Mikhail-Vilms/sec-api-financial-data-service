@@ -1,37 +1,58 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SecApiFinancialDataService.Model;
 using SecApiFinancialDataService.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SecApiFinancialDataService.Controllers
 {
-    [Route("api/financial-data")]
+    [Route("financial-data")]
     [ApiController]
     public class FinancialDataController : ControllerBase
     {
-        private readonly IFinancialPositionService _financialPositionService;
+        private readonly IFinancialDataService _financialPositionService;
 
-        public FinancialDataController(IFinancialPositionService financialPositionService)
+        public FinancialDataController(IFinancialDataService financialPositionService)
         {
             _financialPositionService = financialPositionService;
         }
 
         [HttpGet]
         [Route("{cikNumber}/{statement}/{position}")]
-        // https://localhost:44306/api/financial-data/CIK0000050863/BalanceSheet/Assets
+        // https://localhost:44306/financial-data/CIK0000050863/BalanceSheet/Assets
         public async Task<ActionResult> GetFinancialPositionAsync(
             string cikNumber,
             string statement,
             string position)
         {
+            if (!Enum.TryParse(statement, out FinancialStatementType statementType))
+            {
+                return BadRequest();
+            }
+
             FinancialPositionDynamoItem dynamoItem = await _financialPositionService
-                .GetFinancialPosition(cikNumber, statement, position);
+                .GetFinancialPosition(cikNumber, statementType, position);
 
             return Ok(dynamoItem);
+        }
+
+        [HttpGet]
+        [Route("{cikNumber}/{statement}")]
+        // https://localhost:44306/financial-data/CIK0000050863/BalanceSheet
+        public async Task<ActionResult> GetFinancialPositionsAsync(
+            string cikNumber,
+            string statement)
+        {
+            if (!Enum.TryParse(statement, out FinancialStatementType statementType))
+            {
+                return BadRequest();
+            }
+
+            IList<FinancialPositionDynamoItem> dynamoItems = await _financialPositionService
+                .GetFinancialPositionsByStatement(cikNumber, statementType);
+
+            return Ok(dynamoItems);
         }
     }
 }
