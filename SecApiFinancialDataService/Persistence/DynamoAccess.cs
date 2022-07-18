@@ -63,7 +63,6 @@ namespace SecApiFinancialDataService.Persistence
                 throw new ArgumentNullException("Next values are required for fetching financial position from Dynamo: [cikNumber, statementType]");
             }
 
-            var sortKeyVal = $"StatementStructure_{statementType}";
             StatementStructureDynamoItem dynamoItem = await _dynamoDbContext
                 .LoadAsync<StatementStructureDynamoItem>(
                     cikNumber,

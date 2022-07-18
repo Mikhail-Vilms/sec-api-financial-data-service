@@ -35,7 +35,8 @@ data "aws_iam_policy_document" "lambda-dynamo-access-policy-doc" {
             "dynamodb:UpdateItem",
             "dynamodb:BatchGetItem",
             "dynamodb:BatchWriteItem",
-            "dynamodb:DeleteItem"
+            "dynamodb:DeleteItem",
+            "dynamodb:Query"
         ]
         resources = [
             "arn:aws:dynamodb:us-west-2:672009997609:table/${local.dynamoDbTableName}"
