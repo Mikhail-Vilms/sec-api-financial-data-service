@@ -13,10 +13,10 @@ namespace SecApiFinancialDataService.Model
         public string SortKey { get; set; }
 
         [DynamoDBProperty("FinancialPositions")]
-        public List<FinancialPositionDescription> FinancialPositions { get; set; }
+        public Dictionary<string, FinancialPositionNode> FinancialPositions { get; set; }
     }
 
-    public class FinancialPositionDescription
+    public class FinancialPositionNode
     {
         public List<string> Children { get; set; }
         public string FullLabel { get; set; }
