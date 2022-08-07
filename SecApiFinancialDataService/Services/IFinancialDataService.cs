@@ -9,7 +9,8 @@ namespace SecApiFinancialDataService.Services
         public Task<FinancialPositionDynamoItem> GetFinancialPosition(
             string cikNumber,
             FinancialStatementType statementType,
-            string positionTitle);
+            string positionTitle,
+            bool quaterly);
 
         public Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatement(
             string cikNumber,

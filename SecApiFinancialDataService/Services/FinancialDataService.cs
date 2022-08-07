@@ -1,6 +1,7 @@
 ﻿using SecApiFinancialDataService.Model;
 using SecApiFinancialDataService.Persistence;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SecApiFinancialDataService.Services
@@ -17,12 +18,19 @@ namespace SecApiFinancialDataService.Services
         public async Task<FinancialPositionDynamoItem> GetFinancialPosition(
             string cikNumber,
             FinancialStatementType statementType,
-            string positionTitle)
+            string positionTitle,
+            bool quaterly)
         {
-            return await _dynamoAccess.GetFinancialPosition(
+            FinancialPositionDynamoItem financialPositionDynamoItem = await _dynamoAccess.GetFinancialPosition(
                 cikNumber,
                 statementType,
                 positionTitle);
+
+            financialPositionDynamoItem.Facts = quaterly ? 
+                financialPositionDynamoItem.Facts.Take(12).ToList() :
+                financialPositionDynamoItem.Facts.Where(fact => fact.Frame.Contains("Q1I")).Take(12).ToList();
+
+            return financialPositionDynamoItem;
         }
 
         public async Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatement(

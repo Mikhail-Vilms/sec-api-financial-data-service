@@ -24,7 +24,8 @@ namespace SecApiFinancialDataService.Controllers
         public async Task<ActionResult> GetFinancialPositionAsync(
             string cikNumber,
             string statement,
-            string position)
+            string position,
+            [FromQuery] bool quaterly = false)
         {
             if (!Enum.TryParse(statement, out FinancialStatementType statementType))
             {
@@ -32,7 +33,7 @@ namespace SecApiFinancialDataService.Controllers
             }
 
             FinancialPositionDynamoItem dynamoItem = await _financialPositionService
-                .GetFinancialPosition(cikNumber, statementType, position);
+                .GetFinancialPosition(cikNumber, statementType, position, quaterly);
 
             return Ok(dynamoItem);
         }
