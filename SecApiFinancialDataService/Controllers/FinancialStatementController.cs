@@ -30,7 +30,7 @@ namespace SecApiFinancialDataService.Controllers
             }
 
             StatementStructureDynamoItem dynamoItem = await _financialPositionService
-                .GetStatementStructure(cikNumber, statementType);
+                .GetStatementStructureAsync(cikNumber, statementType);
 
             return Ok(dynamoItem);
         }

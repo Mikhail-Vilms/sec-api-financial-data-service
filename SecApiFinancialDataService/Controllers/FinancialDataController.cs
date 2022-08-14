@@ -33,7 +33,7 @@ namespace SecApiFinancialDataService.Controllers
             }
 
             FinancialPositionDynamoItem dynamoItem = await _financialPositionService
-                .GetFinancialPosition(cikNumber, statementType, position, quaterly);
+                .GetFinancialPositionAsync(cikNumber, statementType, position, quaterly);
 
             return Ok(dynamoItem);
         }
@@ -51,7 +51,7 @@ namespace SecApiFinancialDataService.Controllers
             }
 
             IList<FinancialPositionDynamoItem> dynamoItems = await _financialPositionService
-                .GetFinancialPositionsByStatement(cikNumber, statementType);
+                .GetFinancialPositionsByStatementAsync(cikNumber, statementType);
 
             return Ok(dynamoItems);
         }

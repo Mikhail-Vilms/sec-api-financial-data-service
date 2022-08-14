@@ -6,18 +6,20 @@ namespace SecApiFinancialDataService.Services
 {
     public interface IFinancialDataService
     {
-        public Task<FinancialPositionDynamoItem> GetFinancialPosition(
+        public Task<IList<CompanyDynamoItem>> GetListOfCompaniesAsync();
+
+        public Task<StatementStructureDynamoItem> GetStatementStructureAsync(
+            string cikNumber,
+            FinancialStatementType statementType);
+
+        public Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatementAsync(
+            string cikNumber,
+            FinancialStatementType statementType);
+
+        public Task<FinancialPositionDynamoItem> GetFinancialPositionAsync(
             string cikNumber,
             FinancialStatementType statementType,
             string positionTitle,
             bool quaterly);
-
-        public Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatement(
-            string cikNumber,
-            FinancialStatementType statementType);
-
-        public Task<StatementStructureDynamoItem> GetStatementStructure(
-            string cikNumber,
-            FinancialStatementType statementType);
     }
 }

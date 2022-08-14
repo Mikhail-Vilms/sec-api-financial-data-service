@@ -15,13 +15,18 @@ namespace SecApiFinancialDataService.Services
             _dynamoAccess = dynamoAccess;
         }
 
-        public async Task<FinancialPositionDynamoItem> GetFinancialPosition(
+        public async Task<IList<CompanyDynamoItem>> GetListOfCompaniesAsync()
+        {
+            return await _dynamoAccess.GetListOfCompaniesAsync();
+        }
+
+        public async Task<FinancialPositionDynamoItem> GetFinancialPositionAsync(
             string cikNumber,
             FinancialStatementType statementType,
             string positionTitle,
             bool quaterly)
         {
-            FinancialPositionDynamoItem financialPositionDynamoItem = await _dynamoAccess.GetFinancialPosition(
+            FinancialPositionDynamoItem financialPositionDynamoItem = await _dynamoAccess.GetFinancialPositionAsync(
                 cikNumber,
                 statementType,
                 positionTitle);
@@ -33,20 +38,20 @@ namespace SecApiFinancialDataService.Services
             return financialPositionDynamoItem;
         }
 
-        public async Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatement(
+        public async Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatementAsync(
             string cikNumber,
             FinancialStatementType statementType)
         {
-            return await _dynamoAccess.GetFinancialPositionsByStatement(
+            return await _dynamoAccess.GetFinancialPositionsByStatementAsync(
                 cikNumber,
                 statementType);
         }
 
-        public async Task<StatementStructureDynamoItem> GetStatementStructure(
+        public async Task<StatementStructureDynamoItem> GetStatementStructureAsync(
             string cikNumber,
             FinancialStatementType statementType)
         {
-            return await _dynamoAccess.GetStatementStructure(
+            return await _dynamoAccess.GetStatementStructureAsync(
                 cikNumber,
                 statementType);
         }

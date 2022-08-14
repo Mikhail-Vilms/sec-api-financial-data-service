@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SecApiFinancialDataService.Persistence
 {
+    /// <summary>
+    /// Implementation of all operations with dynamo tables
+    /// </summary>
     public class DynamoAccess : IDynamoAccess
     {
         private readonly IDynamoDBContext _dynamoDbContext;
@@ -16,7 +19,37 @@ namespace SecApiFinancialDataService.Persistence
             _dynamoDbContext = dynamoDbContext;
         }
 
-        public async Task<FinancialPositionDynamoItem> GetFinancialPosition(
+        /// <inheritdoc />
+        public async Task<IList<CompanyDynamoItem>> GetListOfCompaniesAsync()
+        {
+            IList<CompanyDynamoItem> dynamoItems = await _dynamoDbContext
+                .QueryAsync<CompanyDynamoItem>("LIST_OF_COMPANIES")
+                .GetRemainingAsync();
+
+            return dynamoItems;
+        }
+
+        /// <inheritdoc />
+        public async Task<StatementStructureDynamoItem> GetStatementStructureAsync(
+            string cikNumber,
+            FinancialStatementType statementType)
+        {
+            if (cikNumber == null)
+            {
+                throw new ArgumentNullException("Next values are required for fetching financial position from Dynamo: [cikNumber, statementType]");
+            }
+
+            StatementStructureDynamoItem dynamoItem = await _dynamoDbContext
+                .LoadAsync<StatementStructureDynamoItem>(
+                    cikNumber,
+                    $"StatementStructure_{statementType}",
+                    default);
+
+            return dynamoItem;
+        }
+
+        /// <inheritdoc />
+        public async Task<FinancialPositionDynamoItem> GetFinancialPositionAsync(
             string cikNumber,
             FinancialStatementType statementType,
             string positionTitle)
@@ -35,7 +68,8 @@ namespace SecApiFinancialDataService.Persistence
             return dynamoItem;
         }
 
-        public async Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatement(
+        /// <inheritdoc />
+        public async Task<IList<FinancialPositionDynamoItem>> GetFinancialPositionsByStatementAsync(
             string cikNumber,
             FinancialStatementType statementType)
         {
@@ -52,24 +86,6 @@ namespace SecApiFinancialDataService.Persistence
                 .GetRemainingAsync();
 
             return dynamoItems;
-        }
-
-        public async Task<StatementStructureDynamoItem> GetStatementStructure(
-            string cikNumber,
-            FinancialStatementType statementType)
-        {
-            if (cikNumber == null)
-            {
-                throw new ArgumentNullException("Next values are required for fetching financial position from Dynamo: [cikNumber, statementType]");
-            }
-
-            StatementStructureDynamoItem dynamoItem = await _dynamoDbContext
-                .LoadAsync<StatementStructureDynamoItem>(
-                    cikNumber,
-                    $"StatementStructure_{statementType}",
-                    default);
-
-            return dynamoItem;
         }
     }
 }
