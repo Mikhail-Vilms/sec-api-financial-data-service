@@ -15,6 +15,11 @@ namespace SecApiFinancialDataService.Persistence
         public Task<IList<CompanyDynamoItem>> GetListOfCompaniesAsync();
 
         /// <summary>
+        /// Fetches dynamo item that contains information about specific company
+        /// </summary>
+        public Task<CompanyDynamoItem> GetCompanyInfoAsync(string cikNumber);
+
+        /// <summary>
         /// Fetches json that reflects the structure of a specific financial statement by company's identifier and statement title
         /// </summary>
         /// <param name="cikNumber">

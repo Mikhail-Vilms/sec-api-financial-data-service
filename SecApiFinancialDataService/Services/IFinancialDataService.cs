@@ -8,6 +8,8 @@ namespace SecApiFinancialDataService.Services
     {
         public Task<IList<CompanyDynamoItem>> GetListOfCompaniesAsync();
 
+        public Task<CompanyDynamoItem> GetCompanyInfoAsync(string cikNumber);
+
         public Task<StatementStructureDynamoItem> GetStatementStructureAsync(
             string cikNumber,
             FinancialStatementType statementType);

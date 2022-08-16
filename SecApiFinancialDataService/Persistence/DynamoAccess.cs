@@ -30,6 +30,18 @@ namespace SecApiFinancialDataService.Persistence
         }
 
         /// <inheritdoc />
+        public async Task<CompanyDynamoItem> GetCompanyInfoAsync(string cikNumber)
+        {
+            CompanyDynamoItem dynamoItems = await _dynamoDbContext
+                .LoadAsync<CompanyDynamoItem>(
+                    "LIST_OF_COMPANIES_BY_CIK_NUMBER",
+                    cikNumber,
+                    default);
+
+            return dynamoItems;
+        }
+
+        /// <inheritdoc />
         public async Task<StatementStructureDynamoItem> GetStatementStructureAsync(
             string cikNumber,
             FinancialStatementType statementType)

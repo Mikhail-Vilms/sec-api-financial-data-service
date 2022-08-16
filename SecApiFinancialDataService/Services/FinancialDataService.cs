@@ -20,6 +20,11 @@ namespace SecApiFinancialDataService.Services
             return await _dynamoAccess.GetListOfCompaniesAsync();
         }
 
+        public async Task<CompanyDynamoItem> GetCompanyInfoAsync(string cikNumber)
+        {
+            return await _dynamoAccess.GetCompanyInfoAsync(cikNumber);
+        }
+
         public async Task<FinancialPositionDynamoItem> GetFinancialPositionAsync(
             string cikNumber,
             FinancialStatementType statementType,
