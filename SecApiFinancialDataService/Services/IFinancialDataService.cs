@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace SecApiFinancialDataService.Services
 {
+    /// <summary>
+    /// Contract for interactions with Dynamo Table
+    /// </summary>
     public interface IFinancialDataService
     {
         public Task<IList<CompanyDynamoItem>> GetListOfCompaniesAsync();

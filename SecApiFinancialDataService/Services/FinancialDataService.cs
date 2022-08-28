@@ -37,8 +37,8 @@ namespace SecApiFinancialDataService.Services
                 positionTitle);
 
             financialPositionDynamoItem.Facts = quaterly ? 
-                financialPositionDynamoItem.Facts.Take(12).ToList() :
-                financialPositionDynamoItem.Facts.Where(fact => fact.Frame.Contains("Q4I")).Take(12).ToList();
+                financialPositionDynamoItem.Facts.Take(12).Reverse().ToList() :
+                financialPositionDynamoItem.Facts.Where(fact => fact.IsAnnual).Take(12).Reverse().ToList();
 
             return financialPositionDynamoItem;
         }
